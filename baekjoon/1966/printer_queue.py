@@ -1,25 +1,5 @@
 import sys
 
-def find_order(sorted_doc_lists: list, doc_num: int) -> int:
-    for j in range(0, len(sorted_doc_lists)):
-        print(str(sorted_doc_lists[j][0]) + ', ' + str(sorted_doc_lists[j][1]))
-
-    start: int = 0
-    end: int = len(sorted_doc_lists) - 1
-    index: int = len(sorted_doc_lists) // 2
-    while True:
-        found_num: int = sorted_doc_lists[index][0]
-        if found_num < doc_num:
-            start = index + 1
-            index =
-
-
-
-
-    for j in range(0, len(sorted_doc_lists)):
-        print(str(sorted_doc_lists[j][0]) + ', ' + str(sorted_doc_lists[j][1]))
-    return sorted_doc_lists.index(lambda doc_num: doc_num[0])
-
 # Input 오류는 고려하지 않는다.
 if __name__ == '__main__':
     loop_count: int = int(input())
@@ -32,6 +12,14 @@ if __name__ == '__main__':
 
         doc_lists: list = []
         for i in range(0, doc_count):
-            doc_lists.append((i, int(second_input[i])))
+            doc_lists.append((int(second_input[i]), i))
 
-        print(find_order(sorted(doc_lists, key=lambda doc: doc[1]), doc_num_to_find))
+        index: int = 0
+        size: int = len(doc_lists)
+        while index < size-1:
+            if doc_lists[index][0] >= max(doc_lists[index+1:], key=lambda x:x[0])[0]:
+                index += 1
+                continue
+            doc_lists.append(doc_lists.pop(index))
+
+        print(list(map(lambda x:x[1], doc_lists)).index(doc_num_to_find)+1)
