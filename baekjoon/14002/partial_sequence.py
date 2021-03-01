@@ -156,83 +156,128 @@ import sys
 #     print(answer)
 #     return
 
-class Node:
-    def __init__(self, __value: int, __postion: int) -> None:
-        self.value: int = __value
-        self.postion: int = __postion
-        self.sub_nodes: list = []
-        return
+#
+# Timeout 발생한다.
+#
+# class Node:
+#     def __init__(self, __value: int, __postion: int) -> None:
+#         self.value: int = __value
+#         self.postion: int = __postion
+#         self.sub_nodes: list = []
+#         return
 
-    def set_sub_nodes(self, __sub_nodes: list) -> None:
-        self.sub_nodes += __sub_nodes
-        return
+#     def set_sub_nodes(self, __sub_nodes: list) -> None:
+#         self.sub_nodes += __sub_nodes
+#         return
 
-    def find_max_list(self) -> list:
-        value_list: list = []
-        for sub_node in self.sub_nodes:
-            if self.value >= sub_node.value:
+#     def find_max_list(self) -> list:
+#         value_list: list = []
+#         for sub_node in self.sub_nodes:
+#             if self.value >= sub_node.value:
+#                 continue
+#             tmp_list: list = sub_node.find_max_list()
+#             if len(value_list) < len(tmp_list):
+#                 value_list = tmp_list
+
+#         value_list.insert(0, self.value)
+#         return value_list
+
+#     def find_max_depth(self) -> int:
+#         sub_depth: int = 0
+#         for sub_node in self.sub_nodes:
+#             if self.value >= sub_node.value:
+#                 continue
+
+#             tmp_depth: int = sub_node.find_max_depth()
+#             if sub_depth < tmp_depth:
+#                 sub_depth = tmp_depth
+#         return sub_depth + 1
+
+# def make_tree(_num_seq: list, _start_pos: int) -> Node:
+#     root_node: Node = Node(_num_seq[_start_pos], _start_pos)
+#     stack: list = [root_node]
+
+#     while len(stack) != 0:
+#         node: Node = stack.pop()
+#         if len(_num_seq) <= (node.postion+1):
+#             continue
+
+#         sub_nodes: list = []
+#         for i in range(node.postion+1, len(_num_seq)):
+#             if _num_seq[i] > node.value:
+#                 sub_nodes.append(Node(_num_seq[i], i))
+
+#         if len(sub_nodes) == 0:
+#             continue
+
+#         node.sub_nodes = sub_nodes.copy()
+#         stack += sub_nodes
+
+#     return root_node
+
+# def solution(num_seq: list) -> None:
+#     org_list_size: int = len(num_seq)
+#     answer: list = []
+#     answer_depth: int = 0
+#     for i in range(0, org_list_size):
+#         if answer_depth >= (org_list_size-i):
+#             break
+
+#         node: Node = make_tree(num_seq, i)
+#         tmp_answer: list = node.find_max_list()
+
+#         if len(answer) >= len(tmp_answer):
+#             continue
+
+#         answer = tmp_answer
+#         answer_depth = len(tmp_answer)
+
+#     print(answer_depth)
+#     for i in range(0, answer_depth-1):
+#         print(answer[i], end=' ')
+#     print(answer[answer_depth-1])
+
+#     return
+
+def make_max_list(sequence: list, caches: list) -> list:
+    max_list: list = [sequence[0]]
+    max_value: int = sequence[0]
+
+    tmp_list: list = []
+    for cache in caches:
+        if max_value < cache[0]:
+            if len(tmp_list) < len(cache):
+                tmp_list = cache
                 continue
-            tmp_list: list = sub_node.find_max_list()
-            if len(value_list) < len(tmp_list):
-                value_list = tmp_list
 
-        value_list.insert(0, self.value)
-        return value_list
+    if tmp_list != 0:
+        return max_list + tmp_list
 
-    def find_max_depth(self) -> int:
-        sub_depth: int = 0
-        for sub_node in self.sub_nodes:
-            if self.value >= sub_node.value:
-                continue
-
-            tmp_depth: int = sub_node.find_max_depth()
-            if sub_depth < tmp_depth:
-                sub_depth = tmp_depth
-        return sub_depth + 1
-
-def make_tree(_num_seq: list, _start_pos: int) -> Node:
-    root_node: Node = Node(_num_seq[_start_pos], _start_pos)
-    stack: list = [root_node]
-
-    while len(stack) != 0:
-        node: Node = stack.pop()
-        if len(_num_seq) <= (node.postion+1):
+    for value in sequence[1:]:
+        if max_value >= value:
             continue
+        max_list.append(value)
+        max_value = value
 
-        sub_nodes: list = []
-        for i in range(node.postion+1, len(_num_seq)):
-            if _num_seq[i] > node.value:
-                sub_nodes.append(Node(_num_seq[i], i))
-
-        if len(sub_nodes) == 0:
-            continue
-
-        node.sub_nodes = sub_nodes.copy()
-        stack += sub_nodes
-
-    return root_node
+    return max_list
 
 def solution(num_seq: list) -> None:
-    org_list_size: int = len(num_seq)
+    caches: list = [[] for _ in num_seq]
     answer: list = []
-    answer_depth: int = 0
-    for i in range(0, org_list_size):
-        if answer_depth >= (org_list_size-i):
-            break
 
-        node: Node = make_tree(num_seq, i)
-        tmp_answer: list = node.find_max_list()
+    caches[len(caches)-1] = [num_seq[len(num_seq)-1]]
+    answer = caches[len(caches)-1]
 
-        if len(answer) >= len(tmp_answer):
-            continue
+    for i in range(len(num_seq)-2, -1, -1):
+        caches[i] = make_max_list(num_seq[i:], caches[i+1:])
+        if len(answer) < len(caches[i]):
+            answer = caches[i]
 
-        answer = tmp_answer
-        answer_depth = len(tmp_answer)
-
-    print(answer_depth)
-    for i in range(0, answer_depth-1):
+    answer_size: int = len(answer)
+    print(answer_size)
+    for i in range(0, answer_size-1):
         print(answer[i], end=' ')
-    print(answer[answer_depth-1])
+    print(answer[answer_size-1])
 
     return
 
