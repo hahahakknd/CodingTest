@@ -1,54 +1,36 @@
 import sys
 
-def print_space(space: list) -> None:
-    for row in space:
-        print(row)
-    return
-
 def solution(size: int) -> None:
-    space: list = [[0 for _ in range(0, size)] for _ in range(0, size)]
-    row: int = 0
-    column: int = 0
-    order: int = 1      # 탐색 순서
-    direction: int = 1  # 탐색 방향
-    is_column_changed: bool = True
-    is_direction_changed: bool = False
+    space: list = [0 for _ in range(0, size*size)]
+    postion: int = 0
+    order: int = 1
+    directions: list = [1, size, -1, -size]  # 오른쪽, 아래, 왼쪽, 위
+    direction: int = directions[0]
+    next_direction = lambda index:directions[(index+1)%4]
 
-    for i in range(0, size*size):
-        space[row][column] = order
+    for _ in range(0, size*size):
+        space[postion] = order
         order += 1
+        if direction == directions[0]:    # 오른쪽
+            if (postion+1)%size == 0 or space[postion+direction] != 0:
+                direction = next_direction(directions.index(direction))
+        elif direction == directions[1]:  # 아래
+            if postion+direction > len(space) or space[postion+direction] != 0:
+                direction = next_direction(directions.index(direction))
+        elif direction == directions[2]:  # 왼쪽
+            if postion%size == 0 or space[postion+direction] != 0:
+                direction = next_direction(directions.index(direction))
+        elif direction == directions[3]:  # 위
+            if postion+direction < 0 or space[postion+direction] != 0:
+                direction = next_direction(directions.index(direction))
 
-        if is_column_changed == True:
-            if column+direction == -1 or column+direction == size or space[row][column+direction] != 0:
-                is_direction_changed = True
-        else:
-            if row+direction == -1 or row+direction == size or space[row+direction][column] != 0:
-                is_direction_changed = True
+        postion += direction
 
-        if is_direction_changed == True:
-            if row == 0 and column == size-1:  # 아래로 방향전환, Row 가 바뀜
-                direction = 1
-                is_column_changed = False
-                is_direction_changed = False
-            elif row == size-1 and column == size-1:  # 왼쪽으로 방향전환, Column 이 바뀜
-                direction = -1
-                is_column_changed = True
-                is_direction_changed = False
-            elif row == size-1 and column == 0:  # 위로 방향전환, Row 가 바뀜
-                direction = -1
-                is_column_changed = False
-                is_direction_changed = False
-            elif row == 0 and column == 0:  # 오른쪽으로 방향전환, Column 이 바뀜
-                direction = 1
-                is_column_changed = True
-                is_direction_changed = False
-
-        if is_column_changed == True:
-            column += direction
-        else:
-            row += direction
-
-    print_space(space)
+    # 이차원 공간 출력
+    start_pos: int = 0
+    for _ in range(0, size):
+        print(space[start_pos:start_pos+size])
+        start_pos += size
     return
 
 # Input 오류는 고려하지 않는다.
