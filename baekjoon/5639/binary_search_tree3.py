@@ -1,7 +1,6 @@
 class Node:
-    def __init__(self, parent_node, value) -> None:
+    def __init__(self, value) -> None:
         self.value = value
-        self.parent_node = parent_node
         self.left_node = None
         self.right_node = None
 
@@ -11,34 +10,8 @@ class Node:
         else:
             self.right_node = child_node
 
-    def is_left_node(self, node) -> bool:
-        if self.left_node is not None and self.left_node.value == node.value:
-            return True
-        return False
-
-    def to_string(self) -> str:
-        msg = 'value:' + str(self.value)
-        if self.parent_node is None:
-            msg += ', parent:None'
-        else:
-            msg += (', parent:' + str(self.parent_node.value))
-
-        if self.left_node is None:
-            msg += ', left_node:None'
-        else:
-            msg += (', left_node:' + str(self.left_node.value))
-
-        if self.right_node is None:
-            msg += ', right_node:None'
-        else:
-            msg += (', right_node:' + str(self.right_node.value))
-
-        return msg
-
-
 def find_leaf_node(root_node, value) -> Node:
     leaf_node = root_node
-
     while True:
         if leaf_node.value > value:
             if leaf_node.left_node is None:
@@ -48,37 +21,61 @@ def find_leaf_node(root_node, value) -> Node:
             if leaf_node.right_node is None:
                 break
             leaf_node = leaf_node.right_node
-
     return leaf_node
 
-def find_start_node_for_back_travel(node) -> Node:
-    start_node = node
+# Root -> Left -> Right
+def preorder_travel(root_node) -> None:
+    stack = [root_node]
     while True:
-        if start_node.left_node is None and start_node.right_node is None:
+        try:
+            node = stack.pop()
+        except IndexError:
             break
-        if start_node.left_node is not None:
-            start_node = start_node.left_node
-            continue
-        if start_node.right_node is not None:
-            start_node = start_node.right_node
-            continue
-    return start_node
+        print(node.value)
+        if node.right_node is not None:
+            stack.append(node.right_node)
+        if node.left_node is not None:
+            stack.append(node.left_node)
 
-def back_travel(root_node) -> None:
+# Left -> Root -> Right
+def inorder_travel(root_node) -> None:
     stack = []
-
+    node = root_node
     while True:
-        stack.append(root_node.value)
-
-
-        print(travel_node.value)
-        if travel_node.parent_node.parent_node is None:
+        while True:
+            if node is None:
+                break
+            stack.append(node)
+            node = node.left_node
+        try:
+            node = stack.pop()
+        except IndexError:
             break
-        if travel_node.parent_node.is_left_node(travel_node) is not True  \
-                or travel_node.parent_node.right_node is None:
-            travel_node = travel_node.parent_node
-            continue
-        travel_node = travel_node.parent_node.right_node
+        print(node.value)
+        node = node.right_node
+
+# Left -> Right -> Root
+def postorder_travel(root_node) -> None:
+    stack = []
+    node = root_node
+    while True:
+        while True:
+            if node is None:
+                break
+            stack.append(node)
+            node = node.left_node
+        try:
+            node = stack.pop()
+        except IndexError:
+            break
+        if node.right_node is None:
+            print(node.value)
+            node = None
+        else:
+            tmp_node = node.right_node
+            node.right_node = None
+            stack.append(node)
+            node = tmp_node
 
 def solution() -> None:
     root_node = None
@@ -86,14 +83,19 @@ def solution() -> None:
         try:
             A = int(input())
             if root_node is None:
-                root_node = Node(None, A)
+                root_node = Node(A)
             else:
                 found_node = find_leaf_node(root_node, A)
-                node = Node(found_node, A)
+                node = Node(A)
                 found_node.add_child(node)
         except EOFError:
             break
-    back_travel(root_node)
+    print('[ preorder_travel ]')
+    preorder_travel(root_node)
+    print('[ inorder_travel ]')
+    inorder_travel(root_node)
+    print('[ postorder_travel ]')
+    postorder_travel(root_node)
     return
 
 # Input 오류는 고려하지 않는다.
