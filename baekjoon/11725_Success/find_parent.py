@@ -1,5 +1,10 @@
 import sys
 
+# 부모를 찾는다는 접근법으로 풀었다.
+# 결과는 시간초과....
+# 장원형 풀이는 자식을 찾는다 라는 접근법으로 풀었다.
+# 발상의 전환이 필요하다.
+
 def what_is_root(node) -> int:
     global NODES, STACK
     up_node = NODES[node]
