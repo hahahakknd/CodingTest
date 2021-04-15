@@ -13,16 +13,18 @@ def find_steps() -> None:
                 or MAZE[next_point[0]][next_point[1]] == 0           \
                 or CHECK_MAZE[next_point[0]][next_point[1]] != 0:
                 continue
-            CHECK_MAZE[next_point[0]][next_point[1]] = CHECK_MAZE[point[0]][point[1]] + 1
-            stack.append(next_point)
+            if next_point == [END_SIZE[0]-1, END_SIZE[1]-1] and CHECK_MAZE[next_point[0]][next_point[1]] != 0:
+                if CHECK_MAZE[next_point[0]][next_point[1]] > CHECK_MAZE[point[0]][point[1]] + 1:
+                    CHECK_MAZE[next_point[0]][next_point[1]] = CHECK_MAZE[point[0]][point[1]] + 1
+            else:
+                CHECK_MAZE[next_point[0]][next_point[1]] = CHECK_MAZE[point[0]][point[1]] + 1
+                stack.append(next_point)
     return
 
 def solution() -> None:
     global CHECK_MAZE, END_SIZE
     find_steps()
     print(CHECK_MAZE[END_SIZE[0]-1][END_SIZE[1]-1]+1)
-    for i in CHECK_MAZE:
-        print(i)
     return
 
 # Input 오류는 고려하지 않는다.
