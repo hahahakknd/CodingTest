@@ -1,7 +1,6 @@
 import sys
 
-# 각 자리수를 별개로 계산하는것을 의도했나???
-# 그냥 더해도 Timeout 발생 안한다.....
+# 파이썬에서는 범위를 벗어나는 큰 수에 대한 연산을 지원한다. (미리 구현되어 있음)
 def solution(a: int, b: int) -> None:
     print(a+b)
     return
