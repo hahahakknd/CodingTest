@@ -16,7 +16,7 @@
 단, 이동 횟수는 최소가 되어야 한다.</br>
 
 아래 그림은 원판이 5개인 경우의 예시이다.</br>
-<img src="./binary_search_tree.jpg" height="300">
+<img src="./hanoi.jpg" height="300">
 
 ## 입력
 -------
