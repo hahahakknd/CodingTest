@@ -28,8 +28,6 @@ def solution(m: int, n: int) -> None:
             if inner_num%num == 0:
                 sieve[position] = 0
 
-    print(sieve)
-
     # m 이상 n 이하의 자연수 중에서 소수인 것들을 찾아 합과 최소값을 구한다.
     sum_prime_number: int  = 0
     min_prime_number: int  = 0
@@ -38,7 +36,7 @@ def solution(m: int, n: int) -> None:
         sum_prime_number = sieve[m-1]
         min_prime_number = sieve[m-1]
     else:
-        for num in sieve[m-1:n-1]:
+        for num in sieve[m-1:n]:
             if num == 0:
                 continue
 
